@@ -1,85 +1,169 @@
 <div ng-controller='filtering' ng-init="init()">
-  <style>
-    .filtering-container {
-      margin-top: 3px;
-    }
-    .filter-panel-filter {
-      display:inline-block;
-      vertical-align: top;
-      width: 220px;
-      padding: 5px 5px 0px 5px;
-      margin: 5px 5px 5px 0px;
-      color: #444;
-      background-color: #fff;
-      border: 1px solid rgba(100, 100, 100, 0.5);
+    <style>
+        .filtering-container {
+            margin-top: 3px;
+        }
+        .filter-panel-filter {
+            display:inline-block;
+            vertical-align: top;
+            width: 220px;
+            padding: 5px 5px 0px 5px;
+            margin: 5px 5px 5px 0px;
+            color: #444;
+            background-color: #fff;
+            border: 1px solid rgba(100, 100, 100, 0.5);
 
-    }
-    .filter-panel-filter ul {
-      margin-bottom: 3px;
-    }
-    .filter-deselected {
-      opacity: 0.5;
-    }
-    .filter-action {
-      float:right;
-      margin-bottom: 0px !important;
-      margin-left: 3px;
-    }
-    .filter-mandate {
-      text-decoration: underline;
-      cursor: pointer;
-    }
-    .filter-apply {
-      float:right;
-    }
-  </style>
+        }
+        .filter-panel-filter ul {
+            margin-bottom: 3px;
+        }
+        .filter-deselected {
+            opacity: 0.5;
+        }
+        .filter-action {
+            float:right;
+            margin-bottom: 0px !important;
+            margin-left: 3px;
+        }
+        .filter-mandate {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .filter-apply {
+            float:right;
+        }
 
-  <div class='filtering-container'>
+        /****************************************************
+ * 	Push Button
+ *****************************************************/
+        .push_button{
+            position:relative;
+            width:200px;
+            color:#FFF;
+            display:block;
+            text-decoration:none;
+            margin:0 auto;
+            border-radius:5px;
+            border:solid 1px #D94E3B;
+            background:#cb3b27;
+            text-align:center;
+            padding:20px 30px;
+
+            -webkit-transition: all 0.1s;
+            -moz-transition: all 0.1s;
+            transition: all 0.1s;
+
+            -webkit-box-shadow: 0px 9px 0px #84261a;
+            -moz-box-shadow: 0px 9px 0px #84261a;
+            box-shadow: 0px 9px 0px #84261a;
+        }
+
+        .push_button:active{
+            -webkit-box-shadow: 0px 2px 0px #84261a;
+            -moz-box-shadow: 0px 2px 0px #84261a;
+            box-shadow: 0px 2px 0px #84261a;
+            position:relative;
+            top:7px;
+        }
+
+        input.cmn-toggle-yes-no + label {
+            padding: 2px;
+            width: 100%;
+            height: 60px;
+            position: relative;
+
+        }
+        input.cmn-toggle-yes-no + label:before,
+        input.cmn-toggle-yes-no + label:after {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            color: #fff;
+            font-family: "Roboto Slab", serif;
+            font-size: 20px;
+            text-align: center;
+            line-height: 60px;
+        }
+        input.cmn-toggle-yes-no + label:before {
+            background-color: #dddddd;
+            content: attr(data-off);
+            transition: transform 0.5s;
+            backface-visibility: hidden;
+        }
+        input.cmn-toggle-yes-no + label:after {
+            background-color: #8ce196;
+            content: attr(data-on);
+            transition: transform 0.5s;
+            transform: rotateY(180deg);
+            backface-visibility: hidden;
+        }
+        input.cmn-toggle-yes-no:checked + label:before {
+            transform: rotateY(180deg);
+        }
+        input.cmn-toggle-yes-no:checked + label:after {
+            transform: rotateY(0);
+        }
+    </style>
+
+    <div class='filtering-container'>
     <span ng-show="dashboard.current.services.filter.ids.length == 0">
       <h5>No filters available</h5>
     </span>
-    <div ng-repeat="id in dashboard.current.services.filter.ids" class="small filter-panel-filter">
-      <div>
-        <strong>{{dashboard.current.services.filter.list[id].type}}</strong>
-        <span ng-show="!dashboard.current.services.filter.list[id].editing && isEditable(dashboard.current.services.filter.list[id])" class="filter-mandate" ng-click="dashboard.current.services.filter.list[id].editing = true">
+        <div ng-repeat="id in dashboard.current.services.filter.ids" class="small filter-panel-filter">
+            <div>
+                <strong>{{dashboard.current.services.filter.list[id].displayText}}</strong>
+        <!--<span ng-show="!dashboard.current.services.filter.list[id].editing && isEditable(dashboard.current.services.filter.list[id])" class="filter-mandate" ng-click="dashboard.current.services.filter.list[id].editing = true">
           {{dashboard.current.services.filter.list[id].mandate}}
-        </span>
-        <span ng-show="!isEditable(dashboard.current.services.filter.list[id])">
+        </span>-->
+      <!--  <span ng-show="!isEditable(dashboard.current.services.filter.list[id])">
           {{dashboard.current.services.filter.list[id].mandate}}
         </span>
 
-        <i ng-class="getFilterClass(dashboard.current.services.filter.list[id])" class="icon-circle"></i>
+                <i ng-class="getFilterClass(dashboard.current.services.filter.list[id])" class="icon-circle"></i>-->
 
         <span ng-show="dashboard.current.services.filter.list[id].editing">
           <select class="input-small" ng-model="dashboard.current.services.filter.list[id].mandate" ng-options="f for f in ['must','mustNot','either']"></select>
         </span>
 
-        <i class="filter-action pointer icon-remove" bs-tooltip="'Remove'" ng-click="remove(id)"></i>
-        <i class="filter-action pointer" ng-class="{'icon-check': dashboard.current.services.filter.list[id].active,'icon-check-empty': !dashboard.current.services.filter.list[id].active}" bs-tooltip="'Toggle'" ng-click="toggle(id)"></i>
-        <i class="filter-action pointer icon-edit" ng-hide="dashboard.current.services.filter.list[id].editing || !isEditable(dashboard.current.services.filter.list[id])" bs-tooltip="'Edit'" ng-click="dashboard.current.services.filter.list[id].editing = true"></i>
-      </div>
+                <i ng-show="dashboard.current.services.filter.list[id].editing && isEditable(dashboard.current.services.filter.list[id])" class="filter-action pointer icon-remove" bs-tooltip="'Remove'" ng-click="remove(id)"></i>
+                <!--<i class="filter-action pointer" ng-class="{'icon-check': dashboard.current.services.filter.list[id].active,'icon-check-empty': !dashboard.current.services.filter.list[id].active}" bs-tooltip="'Toggle'" ng-click="toggle(id)"></i>-->
+                <i class="filter-action pointer icon-edit" ng-hide="dashboard.current.services.filter.list[id].editing || !isEditable(dashboard.current.services.filter.list[id])" bs-tooltip="'Edit'" ng-click="dashboard.current.services.filter.list[id].editing = true"></i>
+            </div>
+<!--
+            <div ng-hide="dashboard.current.services.filter.list[id].editing && isEditable(dashboard.current.services.filter.list[id])">
+                <ul class="unstyled">
+                    <li ng-repeat="(key,value) in dashboard.current.services.filter.list[id] track by $index" ng-show="show_key(key)">
+                        <strong>{{key}}</strong> : {{value}}
+                    </li>
+                </ul>
+            </div>-->
+            <form ng-show="dashboard.current.services.filter.list[id].editing && isEditable(dashboard.current.services.filter.list[id])">
+                <ul class="unstyled">
+                    <li ng-repeat="key in _.keys(dashboard.current.services.filter.list[id])" ng-show="show_key(key)">
+                        <strong>{{key}}</strong> : <input type='text' ng-model="dashboard.current.services.filter.list[id][key]">
+                    </li>
+                </ul>
+                <div>
 
-      <div ng-hide="dashboard.current.services.filter.list[id].editing && isEditable(dashboard.current.services.filter.list[id])">
-        <ul class="unstyled">
-          <li ng-repeat="(key,value) in dashboard.current.services.filter.list[id] track by $index" ng-show="show_key(key)">
-            <strong>{{key}}</strong> : {{value}}
-          </li>
-        </ul>
-      </div>
-      <form ng-show="dashboard.current.services.filter.list[id].editing && isEditable(dashboard.current.services.filter.list[id])">
-        <ul class="unstyled">
-          <li ng-repeat="key in _.keys(dashboard.current.services.filter.list[id])" ng-show="show_key(key)">
-            <strong>{{key}}</strong> : <input type='text' ng-model="dashboard.current.services.filter.list[id][key]">
-          </li>
-        </ul>
-        <div>
+                    <button type="submit" ng-click="dashboard.current.services.filter.list[id].editing=undefined;refresh()" class="filter-apply btn btn-mini btn-success" bs-tooltip="'Save and refresh'">Apply</button>
 
-          <button type="submit" ng-click="dashboard.current.services.filter.list[id].editing=undefined;refresh()" class="filter-apply btn btn-mini btn-success" bs-tooltip="'Save and refresh'">Apply</button>
+                    <button ng-click="dashboard.current.services.filter.list[id].editing=undefined" class="filter-apply btn-mini btn" bs-tooltip="'Save without refresh'">Save</button>
+                </div>
+            </form>
+            <div ng-hide="dashboard.current.services.filter.list[id].editing && isEditable(dashboard.current.services.filter.list[id])">
+                <!--<a class="push_button" ng-click="toggle(id)">
+                    Push Me
+                </a>-->
 
-          <button ng-click="dashboard.current.services.filter.list[id].editing=undefined" class="filter-apply btn-mini btn" bs-tooltip="'Save without refresh'">Save</button>
+                <div>
+                    <input id="cmn-toggle-{{id}}" hidden="hidden" class="cmn-toggle cmn-toggle-yes-no" type="checkbox" ng-click="toggle(id)">
+                    <label for="cmn-toggle-{{id}}" data-on="{{dashboard.current.services.filter.list[id].displayText}}" data-off="{{dashboard.current.services.filter.list[id].displayText}}"></label>
+                </div>
+            </div>
         </div>
-      </form>
+        <i class="pointer icon-plus-sign" ng-click="add()" bs-tooltip="'Add a query filter'" data-placement="right"></i>
     </div>
-    <i class="pointer icon-plus-sign" ng-click="add()" bs-tooltip="'Add a query filter'" data-placement="right"></i>
-  </div>
 </div>
